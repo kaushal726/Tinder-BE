@@ -2,7 +2,7 @@
 echo "For Backend Press BE, For Frontend Press FE"
 read type
 
-if [ $type="fe" ]
+if [ $type="FE" ]
 then
   echo "The password is correct."
 else
