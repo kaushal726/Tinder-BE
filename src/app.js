@@ -2,9 +2,25 @@ import express from "express";
 import connectDB from "./config/database.js";
 import { isAdminAuth } from "./middlewares/auth.js";
 import User from "./models/users.js";
+import cookieParser from "cookie-parser";
+import authRouter from "./routes/auth.js";
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
 
+app.use("/auth", authRouter);
+
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(status).json({
+    statusCode: status,
+    message,
+    error: err.stack,
+  });
+});
 
 // app.use("/", (req, res) => {
 //   res.json("Hello World!");
@@ -47,21 +63,25 @@ const app = express();
 //   }
 // })
 
-
 app.post("/sign-up", async (req, res) => {
+  try {
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
+
   const userData = {
     firstName: "Guddu",
     lastName: "Raj",
     email: "kaushal@gmail.com",
     password: "123456",
-  }
+  };
 
   const user = new User(userData);
-  await user.save()
+  await user.save();
   res.json({
-    message: "User registered successfully"
-  })
-})
+    message: "User registered successfully",
+  });
+});
 
 connectDB()
   .then(() => {
