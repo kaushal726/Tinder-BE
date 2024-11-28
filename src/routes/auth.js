@@ -8,12 +8,12 @@ const authRouter = express.Router();
 
 authRouter.post("/login", async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { emailId, password } = req.body;
     const isValidatated = customValidators(req, "LOGIN");
     if (!isValidatated) {
       throw new Error("Invalid Fields");
     }
-    let isRegisteredUser = await User.findOne({ email: email });
+    let isRegisteredUser = await User.findOne({ emailId: emailId });
     if (!isRegisteredUser) {
       throw new Error("Invalid credentials");
     }
@@ -37,12 +37,12 @@ authRouter.post("/signup", async (req, res, next) => {
     if (!isValidatated) {
       throw new Error("Invalid Fields");
     }
-    const { firstName, lastName, email, password, age, about } = req.body;
+    const { firstName, lastName, emailId, password, age, about } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       firstName,
       lastName,
-      email,
+      emailId,
       password: hashedPassword,
       age,
       about,
@@ -71,12 +71,12 @@ authRouter.post("/logout", (req, res) => {
 authRouter.post("/forget-password", async (req, res, next) => {
   try {
     const { password } = req.body;
-    const { email } = req.params;
+    const { emailId } = req.params;
     const isValidatated = customValidators(req, "FORGET_PASSWORD");
     if (!isValidatated) {
       throw new Error("Invalid Fields");
     }
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ emailId: emailId });
     if (!user) {
       throw new Error("User not found");
     }

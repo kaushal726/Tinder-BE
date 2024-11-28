@@ -1,11 +1,18 @@
 const validateFields = [
   {
     fields: "LOGIN",
-    checkFields: ["email", "password"],
+    checkFields: ["emailId", "password"],
   },
   {
     fields: "SIGNUP",
-    checkFields: ["firstName", "lastName", "email", "password", "age", "about"],
+    checkFields: [
+      "firstName",
+      "lastName",
+      "emailId",
+      "password",
+      "age",
+      "about",
+    ],
   },
   {
     fields: "FORGET_PASSWORD",
@@ -15,13 +22,26 @@ const validateFields = [
     fields: "PROFILE_EDIT",
     checkFields: ["password"],
   },
+  {
+    fields: "EDIT_PROFILE",
+    checkFields: [
+      "firstName",
+      "lastName",
+      "emailId",
+      "photoUrl",
+      "gender",
+      "age",
+      "about",
+      "skills",
+    ],
+  },
 ];
 
 const customValidators = (req, fields) => {
   const isValid = validateFields.some(
     (field) =>
       field.fields.includes(fields) &&
-      field.checkFields.every((checkField) => req.body[checkField] != "")
+      field.checkFields.every((checkField) => req.body[checkField] !== "")
   );
   return isValid;
 };
