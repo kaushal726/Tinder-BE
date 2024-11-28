@@ -7,6 +7,14 @@ const validateFields = [
     fields: "SIGNUP",
     checkFields: ["firstName", "lastName", "email", "password", "age", "about"],
   },
+  {
+    fields: "FORGET_PASSWORD",
+    checkFields: ["password"],
+  },
+  {
+    fields: "PROFILE_EDIT",
+    checkFields: ["password"],
+  },
 ];
 
 const customValidators = (req, fields) => {

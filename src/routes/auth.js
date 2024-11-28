@@ -1,6 +1,7 @@
 import express from "express";
 import { customValidators, createResponse } from "../utils/helper.js";
 import User from "../models/users.js";
+import bcrypt from "bcryptjs";
 
 const SECRET_KEY = "APPLICATION";
 const authRouter = express.Router();
@@ -16,17 +17,14 @@ authRouter.post("/login", async (req, res, next) => {
     if (!isRegisteredUser) {
       throw new Error("Invalid credentials");
     }
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      isRegisteredUser.password
-    );
+    const isPasswordCorrect = await User.validatePassword(password);
     if (!isPasswordCorrect) {
       throw new Error("Invalid credentials");
     }
-    const token = jwt.sign({ _id: isRegisteredUser._id }, SECRET_KEY, {
-      expiresIn: "2d",
+    const token = await User.getJWT();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
     });
-    res.cookie("token", token);
     return createResponse(res, 200, "Login successful", { token });
   } catch (error) {
     next(error);
@@ -57,7 +55,12 @@ authRouter.post("/signup", async (req, res, next) => {
 });
 
 authRouter.post("/logout", (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    expires: new Date(Date.now()),
+  });
+  // res.cookie("token",null,{
+  //   expires: new Date(Date.now()),
+  // })
   res.json({
     statusCode: 200,
     message: "Loged Out successfully",
