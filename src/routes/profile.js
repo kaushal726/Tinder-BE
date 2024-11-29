@@ -22,12 +22,11 @@ profileRouter.patch("/edit", authValidator, async (req, res, next) => {
     if (!isValidatated) {
       throw new Error("Invalid Fields");
     }
-    const { firstName, lastName, emailId, age, about, skill } = req.body;
     Object.keys(req.body).forEach((field) => (user[field] = req.body[field]));
 
     await user.save();
     createResponse(res, 200, "Profile updated successfully", user);
-  } catch (error) {}
+  } catch (error) { }
 });
 
 profileRouter.post(

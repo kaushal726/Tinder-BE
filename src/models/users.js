@@ -48,23 +48,23 @@ const userSchema = new Schema({
   skill: {
     type: [String],
   },
-});
+},
+  { timestamps: true });
 
-userSchema.method.getJWT = async function () {
+userSchema.methods.getJWT = async function () {
   const user = this;
   const token = await jwt.sign({ _id: user._id }, SECRET_KEY, {
     expiresIn: "2d",
   });
+  return token; 
 };
 
-userSchema.method.validatePassword = async function (passwordInputByUser) {
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
   const user = this;
-  const isPasswordCorrect = await bcrypt.compare(
-    passwordInputByUser,
-    user.password
-  );
+  const isPasswordCorrect = await bcrypt.compare(passwordInputByUser, user.password);
   return isPasswordCorrect;
 };
+
 
 const User = model("User", userSchema);
 export default User;

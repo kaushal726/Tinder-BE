@@ -1,3 +1,6 @@
+import validator from "validator";
+
+
 const validateFields = [
   {
     fields: "LOGIN",
@@ -45,6 +48,31 @@ export const customValidators = (req, fields) => {
   );
   return isValid;
 };
+
+export const authSignUp = async (req, field) => {
+  const { firstName, lastName, emailId, password, age, about, gender, photoUrl, skill } = req.body;
+  if (!firstName && !lastName && !password && !emailId) {
+    return false
+  }
+  if (!validator.isEmail(emailId)) {
+    return false
+  }
+  if (!validator.isURL(photoUrl)) {
+    return false
+  }
+  return true
+}
+
+export const authLogin = async (req, field) => {
+  const { emailId, password } = req.body;
+  if (!password && !emailId) {
+    return false
+  }
+  if (!validator.isEmail(emailId)) {
+    return false
+  }
+  return true
+}
 
 export const createResponse = (
   res,
