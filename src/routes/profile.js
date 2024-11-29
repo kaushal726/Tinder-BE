@@ -2,6 +2,7 @@ import express from "express";
 import { customValidators, createResponse } from "../utils/helper.js";
 import User from "../models/users.js";
 import { authValidator } from "../middlewares/auth.js";
+import bcrypt from "bcrypt";
 
 const SECRET_KEY = "APPLICATION";
 const profileRouter = express.Router();
@@ -31,22 +32,23 @@ profileRouter.patch("/edit", authValidator, async (req, res, next) => {
 
 profileRouter.post(
   "/forgot-password",
-  authValidator,
   async (req, res, next) => {
     try {
       const { password } = req.body;
       const { emailId } = req.query.emailId;
-      const isValidatated = customValidators(req, "FORGET_PASSWORD");
-      if (!isValidatated) {
+      if ((emailId == "" && password == "") && (!validator.isStrongPassword(password) && !validator.isEmail(emailId))) {
         throw new Error("Invalid Fields");
       }
-      const user = await User.findOne({ emailId: emailId });
+      const user = await User.find({ emailId: emailId });
       if (!user) {
         throw new Error("User not found");
       }
       const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-      await user.save();
+
+      const _user = await User.updateOne({ password: hashedPassword })
+      if (_user.matchedCount === 0) {
+        throw new Error("Failed to reset password");
+      }
       return createResponse(res, 200, "Password reset successfully");
     } catch (error) {
       next(error);

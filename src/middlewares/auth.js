@@ -14,6 +14,7 @@ export const authValidator = async (req, res, next) => {
       throw new Error("Unauthorized");
     }
     const { _id } = decodedObj;
+
     const user = await User.findById(_id);
     if (!user) {
       throw new Error("User not found");

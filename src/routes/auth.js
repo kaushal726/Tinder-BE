@@ -62,9 +62,7 @@ authRouter.post("/signup", async (req, res, next) => {
 });
 
 authRouter.post("/logout", (req, res) => {
-  res.clearCookie("token", {
-    expires: new Date(Date.now()),
-  });
+  res.clearCookie("token");
   // res.cookie("token",null,{
   //   expires: new Date(Date.now()),
   // })
