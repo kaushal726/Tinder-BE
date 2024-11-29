@@ -15,7 +15,7 @@ export const authValidator = async (req, res, next) => {
     }
     const { _id } = decodedObj;
     const user = await User.findById(_id);
-    if (!user) {    
+    if (!user) {
       throw new Error("User not found");
     }
     req.user = user;

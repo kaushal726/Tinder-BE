@@ -1,7 +1,6 @@
 import express from "express";
 import { customValidators, createResponse } from "../utils/helper.js";
 import User from "../models/users.js";
-import bcrypt from "bcryptjs";
 import { authValidator } from "../middlewares/auth.js";
 
 const SECRET_KEY = "APPLICATION";
@@ -30,3 +29,5 @@ profileRouter.patch("/edit", authValidator, async (req, res, next) => {
     createResponse(res, 200, "Profile updated successfully", user);
   } catch (error) {}
 });
+
+export default profileRouter;

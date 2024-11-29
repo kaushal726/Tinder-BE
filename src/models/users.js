@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import validator from "validator";
 
 const { Schema, model } = mongoose;
-import validator from "validator"
 
 const SECRET_KEY = "APPLICATION";
 

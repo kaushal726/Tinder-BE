@@ -1,7 +1,7 @@
 import express from "express";
 import { customValidators, createResponse } from "../utils/helper.js";
 import User from "../models/users.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 const SECRET_KEY = "APPLICATION";
 const authRouter = express.Router();

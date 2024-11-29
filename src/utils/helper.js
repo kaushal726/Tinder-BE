@@ -37,7 +37,7 @@ const validateFields = [
   },
 ];
 
-const customValidators = (req, fields) => {
+export const customValidators = (req, fields) => {
   const isValid = validateFields.some(
     (field) =>
       field.fields.includes(fields) &&
@@ -46,7 +46,7 @@ const customValidators = (req, fields) => {
   return isValid;
 };
 
-const createResponse = (
+export const createResponse = (
   res,
   statusCode,
   message,
@@ -59,9 +59,4 @@ const createResponse = (
     data,
     error,
   });
-};
-
-const objExport = {
-  customValidators: customValidators,
-  createResponse: createResponse,
 };
