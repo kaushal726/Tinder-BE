@@ -68,25 +68,4 @@ authRouter.post("/logout", (req, res) => {
   });
 });
 
-authRouter.post("/forget-password", async (req, res, next) => {
-  try {
-    const { password } = req.body;
-    const { emailId } = req.params;
-    const isValidatated = customValidators(req, "FORGET_PASSWORD");
-    if (!isValidatated) {
-      throw new Error("Invalid Fields");
-    }
-    const user = await User.findOne({ emailId: emailId });
-    if (!user) {
-      throw new Error("User not found");
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
-    await user.save();
-    return createResponse(res, 200, "Password reset successfully");
-  } catch (error) {
-    next(error);
-  }
-});
-
 export default authRouter;
