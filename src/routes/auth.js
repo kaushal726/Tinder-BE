@@ -10,6 +10,7 @@ authRouter.post("/login", async (req, res, next) => {
   try {
     const { emailId, password } = req.body;
     const isValidatated = authLogin(req, "LOGIN");
+
     if (!isValidatated) {
       throw new Error("Invalid Fields");
     }
@@ -63,9 +64,6 @@ authRouter.post("/signup", async (req, res, next) => {
 
 authRouter.post("/logout", (req, res) => {
   res.clearCookie("token");
-  // res.cookie("token",null,{
-  //   expires: new Date(Date.now()),
-  // })
   res.json({
     statusCode: 200,
     message: "Loged Out successfully",

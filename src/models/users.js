@@ -51,12 +51,14 @@ const userSchema = new Schema({
 },
   { timestamps: true });
 
+userSchema.index({ emailId: 1 })
+
 userSchema.methods.getJWT = async function () {
   const user = this;
   const token = await jwt.sign({ _id: user._id }, SECRET_KEY, {
     expiresIn: "2d",
   });
-  return token; 
+  return token;
 };
 
 userSchema.methods.validatePassword = async function (passwordInputByUser) {

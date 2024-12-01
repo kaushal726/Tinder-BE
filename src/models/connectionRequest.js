@@ -20,7 +20,7 @@ const connectionRequest = new Schema(
     status: {
       type: String,
       enum: {
-        values: ["PENDING", "ACCEPTED", "REJECTED", "IGNORE"],
+        values: ["pending", "accepted", "rejected", "ignore", "interested"],
         message: `{VALUE} is not accepted`,
       },
       required: true,
@@ -31,6 +31,15 @@ const connectionRequest = new Schema(
   }
 );
 
-const ConectionRequestModel = new model("ConnectionRequest", connectionRequest);
+connectionRequest.index({ fromUserId: 1 }, { toUserId: 1 })
 
-export default ConectionRequestModel;
+connectionRequest.pre("save", async function (next) {
+  const connectionRequest = this;
+  if (connectionRequest.fromUserId.equals(connectionRequest.toUserId)) {
+    throw new Error("Cannot send connection request to yourself");
+  }
+})
+
+const ConnectionRequestModel = new model("ConnectionRequest", connectionRequest);
+
+export default ConnectionRequestModel;
