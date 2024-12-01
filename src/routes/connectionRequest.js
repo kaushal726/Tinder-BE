@@ -52,4 +52,32 @@ connectionRequest.post("/send/:status/:userId", authValidator, async (req, res, 
     }
 })
 
+connectionRequest.post("/review/:status/:userId", authValidator, async (req, res, next) => {
+    try {
+        const isStatusValid = ["accepted", "rejected"];
+
+        const loggedInUser = req.user;
+        const { userId, status } = req.params;
+        if (!isStatusValid.includes(status)) {
+            throw new Error("Invalid status");
+        }
+
+        const connectionRequest = await ConnectionRequestModel.findOne({
+            _id: userId,
+            toUserId: loggedInUser._id,
+            status: "interested",
+        });
+
+        if (!connectionRequest) {
+            throw new Error("User not found");
+        }
+
+        connectionRequest.status = status
+        const response = await connectionRequest.save();
+        createResponse(res, 200, "Connection request sent successfully", response);
+    } catch (error) {
+        next(error);
+    }
+})
+
 export default connectionRequest
