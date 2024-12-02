@@ -7,51 +7,53 @@ const { Schema, model } = mongoose;
 
 const SECRET_KEY = "APPLICATION";
 
-const userSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-  },
-  lastName: {
-    type: String,
-    required: true,
-  },
-  emailId: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  gender: {
-    type: String,
-    enum: ["MALE", "FEMALE", "OTHER"],
-    required: true,
-  },
-  photoUrl: {
-    type: String,
-    default: "https://via.placeholder.com/150",
-    validate(value) {
-      if (!validator.isURL(value)) throw new Error("Invalid URL");
+const userSchema = new Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    emailId: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ["MALE", "FEMALE", "OTHER"],
+      required: true,
+    },
+    photoUrl: {
+      type: String,
+      default: "https://via.placeholder.com/150",
+      validate(value) {
+        if (!validator.isURL(value)) throw new Error("Invalid URL");
+      },
+    },
+    about: {
+      type: String,
+    },
+    age: {
+      type: Number,
+      min: 18,
+      max: 100,
+      required: true,
+    },
+    skill: {
+      type: [String],
     },
   },
-  about: {
-    type: String,
-  },
-  age: {
-    type: Number,
-    min: 18,
-    max: 100,
-    required: true,
-  },
-  skill: {
-    type: [String],
-  },
-},
-  { timestamps: true });
+  { timestamps: true }
+);
 
-userSchema.index({ emailId: 1 })
+userSchema.index({ emailId: 1 });
 
 userSchema.methods.getJWT = async function () {
   const user = this;
@@ -63,10 +65,12 @@ userSchema.methods.getJWT = async function () {
 
 userSchema.methods.validatePassword = async function (passwordInputByUser) {
   const user = this;
-  const isPasswordCorrect = await bcrypt.compare(passwordInputByUser, user.password);
+  const isPasswordCorrect = await bcrypt.compare(
+    passwordInputByUser,
+    user.password
+  );
   return isPasswordCorrect;
 };
-
 
 const User = model("User", userSchema);
 export default User;
