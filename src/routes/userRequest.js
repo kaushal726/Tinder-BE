@@ -13,6 +13,8 @@ import User from "../models/users.js";
 const SECRET_KEY = "APPLICATION";
 const userRequestRouter = express.Router();
 
+const SAFE_DATA = "firstName lastName age gender about photoUrl";
+
 userRequestRouter.get(
   "/user/request/recieved",
   authValidator,
@@ -22,7 +24,7 @@ userRequestRouter.get(
       const userRequests = await ConnectionRequestModel.find({
         toUser: user._id,
         status: "interested",
-      }).populate("fromUserId", "firstName lastName age gender about photoUrl");
+      }).populate("fromUserId", SAFE_DATA);
       createResponse(
         res,
         200,
@@ -47,8 +49,8 @@ userRequestRouter.get(
           { toUserId: user.id, status: "interested" },
         ],
       })
-        .populate("fromUserId", "firstName lastName age gender about photoUrl")
-        .populate("toUserId", "firstName lastName age gender about photoUrl");
+        .populate("fromUserId", SAFE_DATA)
+        .populate("toUserId", SAFE_DATA);
 
       const data = userRequests.map((req) => {
         if (req.fromUserId.toString() == user._id.toString()) {
@@ -68,16 +70,36 @@ userRequestRouter.get(
 userRequestRouter.get("/user/feed", authValidator, async (res, res, next) => {
   try {
     const user = req.user;
+    let limit = req.query.limit || 10;
+    let page = req.query.page || 1;
+    limit = limit > 50 ? 50 : limit;
+    let skip = page - 1 * limit;
+
     const userRequests = await ConnectionRequestModel.find({
+      $or: [{ fromUserId: user._id }, { toUserId: user._id }],
+    }).select("fromUserId toUserId");
+
+    const userNotAllowed = new Set();
+    userRequests.forEach((req) => {
+      userRequests.add(req.fromUserId.toString(), req.toUserId.toString());
+    });
+
+    const usersForFeed = await User.find({
       $and: [
-        { fromUserId: { $not: { $eq: user._id } } },
-        { toUserId: { $not: { $eq: user._id } } },
+        { _id: { $nin: Array.from(userNotAllowed) } },
+        { _id: { $ne: user._id } },
       ],
     })
-      .populate("fromUserId", "firstName lastName age gender about photoUrl")
-      .populate("toUserId", "firstName lastName age gender about photoUrl");
+      .select(SAFE_DATA)
+      .skip(skip)
+      .limit(limit);
 
-    createResponse(res, 200, "User requests fetched successfully", data);
+    createResponse(
+      res,
+      200,
+      "User requests fetched successfully",
+      usersForFeed
+    );
   } catch (error) {
     next(error);
   }
