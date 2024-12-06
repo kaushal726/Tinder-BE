@@ -16,8 +16,8 @@ app.use("/profile", profileRouter);
 app.use("/request", connectionRequest);
 
 app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  const message = err.message || "Internal Server Error";
+  const status = err.status || 400;
+  const message = err.message || "Bad Request";
 
   res.status(status).json({
     statusCode: status,
