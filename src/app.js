@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.js";
 import profileRouter from "./routes/profile.js";
 import connectionRequest from "./routes/connectionRequest.js";
-import cros from "cros"
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
@@ -14,7 +14,6 @@ app.use(cors());
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
 app.use("/request", connectionRequest);
-
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
