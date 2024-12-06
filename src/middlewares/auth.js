@@ -1,15 +1,13 @@
 import jwt from "jsonwebtoken";
 import User from "../models/users.js";
 
-const SECRET_KEY = "APPLICATION";
-
 export const authValidator = async (req, res, next) => {
   try {
     const token = req.cookies.token;
     if (!token) {
       throw new Error("Unauthorized");
     }
-    const decodedObj = await jwt.verify(token, SECRET_KEY);
+    const decodedObj = await jwt.verify(token, process.env.SECRET_KEY);
     if (!decodedObj) {
       throw new Error("Unauthorized");
     }

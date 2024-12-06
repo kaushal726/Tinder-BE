@@ -5,8 +5,6 @@ import validator from "validator";
 
 const { Schema, model } = mongoose;
 
-const SECRET_KEY = "APPLICATION";
-
 const userSchema = new Schema(
   {
     firstName: {
@@ -57,7 +55,7 @@ userSchema.index({ emailId: 1 });
 
 userSchema.methods.getJWT = async function () {
   const user = this;
-  const token = await jwt.sign({ _id: user._id }, SECRET_KEY, {
+  const token = await jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
     expiresIn: "2d",
   });
   return token;

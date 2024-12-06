@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
-  await mongoose.connect("mongodb+srv://kausraj726:kaushalraj@kaushal.1ovwx.mongodb.net/devTinder");
+  await mongoose.connect(process.env.DB_CONNECTION_STRING);
 };
 
 export default connectDB;

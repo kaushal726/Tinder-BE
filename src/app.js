@@ -1,12 +1,16 @@
 import express from "express";
-import connectDB from "./config/database.js";
+import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+import connectDB from "./config/database.js";
 import authRouter from "./routes/auth.js";
 import profileRouter from "./routes/profile.js";
 import connectionRequest from "./routes/connectionRequest.js";
-import cors from "cors";
 
 const app = express();
+const PORT = process.env.PORT || 7000;
+dotenv.config();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
@@ -29,7 +33,7 @@ app.use((err, req, res, next) => {
 connectDB()
   .then(() => {
     console.log("Database connected");
-    app.listen(3000, () => {
+    app.listen(PORT, () => {
       console.log("Server running on port 3000");
     });
   })

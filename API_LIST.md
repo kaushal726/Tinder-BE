@@ -24,3 +24,6 @@
 - GET /user/feed
 
 Status = interested, accepted, rejected, ignore
+
+SECRET_KEY = "TINDER-BE-SECRET-KEY";
+DB_CONNECTION_STRING ="mongodb+srv://kausraj726:kaushalraj@kaushal.1ovwx.mongodb.net/devTinder"
